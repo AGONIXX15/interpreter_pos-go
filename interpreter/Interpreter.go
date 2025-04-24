@@ -2,29 +2,28 @@ package interpreter
 
 import (
 	"AGONIXX15/interpreter_pos-go.git/lexer"
+	"AGONIXX15/interpreter_pos-go.git/parser"
 	"bufio"
 	"os"
+	// "fmt"
 
-	"github.com/chzyer/readline"
+	// "github.com/chzyer/readline"
 )
 
-func TerminalInterpreter() {
-	rl, err := readline.New("> ")
-	if err != nil {
-		panic(err)
-	}
-	defer rl.Close()
+// func TerminalInterpreter() {
+// 	buffer := bufio.NewScanner(os.Stdin)
+// 	lex := lexer.NewLexer(buffer)
+// 	p := parser.NewParser(lex)
+// 	if buffer.Scan() {
+// 		line := buffer.Text()
+// 		fmt.Println(line)
+// 		body := p.Parse()
+// 		fmt.Printf("%v\n",body)
+// 		parser.Debug(body)
+// 	}
+// }
 
-	lex := lexer.NewLexer()
-	for {
-		line, err := rl.Readline()
-		if err != nil { // io.EOF
-			break
-		}
-		lex.Tokenize(line)
-		lex.Debug()
-	}
-}
+
 
 func RunFile(fileName string) {
 	file, err := os.Open(fileName)
@@ -34,10 +33,8 @@ func RunFile(fileName string) {
 	defer file.Close()
 
 	buffer := bufio.NewScanner(file)
-	lex := lexer.NewLexer()
-	for buffer.Scan(){
-		line := buffer.Text()
-		lex.Tokenize(line)
-		lex.Debug()
-	}
+	lex := lexer.NewLexer(buffer)
+	p := parser.NewParser(lex)
+	block := p.Parse()
+	parser.Debug(block)
 }
